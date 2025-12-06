@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  server:
+    build: ./server
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=host.docker.internal
+      - DB_PORT=3306
+      - DB_USERNAME=mangos
+      - DB_PASSWORD=mangos
+      - DB_DATABASE=realmd
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  client:
+    build: ./client
+    ports:
+      - "80:80"
+    depends_on:
+      - server
