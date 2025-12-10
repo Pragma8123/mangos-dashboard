@@ -1,7 +1,7 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import * as crypto from 'crypto';
+import { Repository } from 'typeorm';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { Account } from './entities/account.entity';
@@ -16,10 +16,10 @@ export class AccountService {
   async create(createAccountDto: CreateAccountDto): Promise<Account> {
     const { username, password, email, expansion } = createAccountDto;
 
-    const existing = await this.accountRepository.findOne({ 
-      where: { username: username } 
+    const existing = await this.accountRepository.findOne({
+      where: { username: username },
     });
-    
+
     if (existing) {
       throw new ConflictException('Username already exists');
     }
@@ -29,15 +29,24 @@ export class AccountService {
 
     // SRP6 Calculations
     const salt = crypto.randomBytes(32);
-    
-    const h1 = crypto.createHash('sha1').update(`${userUpper}:${passUpper}`).digest();
-    
+
+    const h1 = crypto
+      .createHash('sha1')
+      .update(`${userUpper}:${passUpper}`)
+      .digest();
+
     const saltReversed = Buffer.from(salt).reverse();
-    const h2 = crypto.createHash('sha1').update(saltReversed).update(h1).digest();
-    
+    const h2 = crypto
+      .createHash('sha1')
+      .update(saltReversed)
+      .update(h1)
+      .digest();
+
     const x = BigInt('0x' + h2.reverse().toString('hex'));
 
-    const N = BigInt('0x894B645E89E1535BBDAD5B8B290650530801B18EBFBF5E8FAB3C82872A3E9BB7');
+    const N = BigInt(
+      '0x894B645E89E1535BBDAD5B8B290650530801B18EBFBF5E8FAB3C82872A3E9BB7',
+    );
     const g = BigInt(7);
 
     const v = this.modPow(g, x, N);
