@@ -1,21 +1,21 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 export const RegisterForm = () => {
   const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-    email: "",
+    username: '',
+    password: '',
+    email: '',
     expansion: 0,
   });
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setFormData({
       ...formData,
       [e.target.name]:
-        e.target.name === "expansion"
+        e.target.name === 'expansion'
           ? parseInt(e.target.value)
           : e.target.value,
     });
@@ -24,31 +24,32 @@ export const RegisterForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch("/api/account", {
-        method: "POST",
+      const response = await fetch('/api/account', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Registration failed");
+        throw new Error(errorData.message || 'Registration failed');
       }
 
-      setMessage("Account created successfully!");
-    } catch (error: any) {
-      setMessage(`Error: ${error.message}`);
+      setMessage('Account created successfully!');
+    } catch (error) {
+      if (error instanceof Error) setMessage(`Error: ${error.message!}`);
+      else setMessage(`Error: ${error}`);
     }
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "0 auto", textAlign: "left" }}>
+    <div style={{ maxWidth: '400px', margin: '0 auto', textAlign: 'left' }}>
       <h2>Create Account</h2>
       <form
         onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+        style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}
       >
         <div>
           <label>Username:</label>
@@ -59,7 +60,7 @@ export const RegisterForm = () => {
             onChange={handleChange}
             required
             minLength={3}
-            style={{ width: "100%", padding: "0.5rem" }}
+            style={{ width: '100%', padding: '0.5rem' }}
           />
         </div>
         <div>
@@ -71,7 +72,7 @@ export const RegisterForm = () => {
             onChange={handleChange}
             required
             minLength={6}
-            style={{ width: "100%", padding: "0.5rem" }}
+            style={{ width: '100%', padding: '0.5rem' }}
           />
         </div>
         <div>
@@ -82,7 +83,7 @@ export const RegisterForm = () => {
             value={formData.email}
             onChange={handleChange}
             required
-            style={{ width: "100%", padding: "0.5rem" }}
+            style={{ width: '100%', padding: '0.5rem' }}
           />
         </div>
         <div>
@@ -91,7 +92,7 @@ export const RegisterForm = () => {
             name="expansion"
             value={formData.expansion}
             onChange={handleChange}
-            style={{ width: "100%", padding: "0.5rem" }}
+            style={{ width: '100%', padding: '0.5rem' }}
           >
             <option value={0}>Classic</option>
             <option value={1}>TBC</option>
@@ -99,7 +100,7 @@ export const RegisterForm = () => {
             <option value={3}>Cataclysm</option>
           </select>
         </div>
-        <button type="submit" style={{ padding: "0.75rem", cursor: "pointer" }}>
+        <button type="submit" style={{ padding: '0.75rem', cursor: 'pointer' }}>
           Register
         </button>
       </form>

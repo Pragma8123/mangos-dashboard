@@ -1,5 +1,5 @@
-import { RegisterForm } from './components/RegisterForm'
-import './App.css'
+import './App.css';
+import { RegisterForm } from './components/RegisterForm';
 
 function App() {
   return (
@@ -9,7 +9,7 @@ function App() {
         <RegisterForm />
       </div>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
